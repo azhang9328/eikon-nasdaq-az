@@ -9,11 +9,12 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, net } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+import 'dotenv/config';
 
 class AppUpdater {
   constructor() {
@@ -29,6 +30,27 @@ ipcMain.on('ipc-example', async (event, arg) => {
   const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
   console.log(msgTemplate(arg));
   event.reply('ipc-example', msgTemplate('pong'));
+});
+
+ipcMain.handle('getApiData', (...args: unknown[]) => {
+  const arguements = [...args];
+  const [startDate, endDate, order, interval] =
+    arguements[arguements.length - 1];
+
+  const request = net.request(
+    `https://data.nasdaq.com/api/v3/datasets/RATEINF/CPI_USA.csv?order=${order}&api_key=${process.env.NASDAQ_API_KEY}&start_date=${startDate}&end_date=${endDate}&collapse=${interval}`
+  );
+  request.on('response', (response) => {
+    const data = [];
+    response.on('data', (chunk) => {
+      data.push(chunk);
+    });
+    response.on('end', () => {
+      const json = Buffer.concat(data).toString();
+      mainWindow?.webContents.send('gotData', json);
+    });
+  });
+  request.end();
 });
 
 if (process.env.NODE_ENV === 'production') {
@@ -75,6 +97,7 @@ const createWindow = async () => {
     height: 728,
     icon: getAssetPath('icon.png'),
     webPreferences: {
+      nodeIntegration: true,
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
         : path.join(__dirname, '../../.erb/dll/preload.js'),

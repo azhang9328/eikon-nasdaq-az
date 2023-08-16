@@ -2,61 +2,212 @@
  * @NOTE: Prepend a `~` to css file paths that are in your node_modules
  *        See https://github.com/webpack-contrib/sass-loader#imports
  */
+:root {
+  --black:#192428;
+  --dark-gray:#2d383c;
+  --light-gray:#414c50;
+  --dark-blue: #0a1b2b;
+  --medium-blue:#0784b5;
+  --light-blue:#39ace7;
+  --white:rgb(237, 237, 245);
+}
+
 body {
   position: relative;
-  color: white;
+  color: var(--white);
   height: 100vh;
-  background: linear-gradient(
-    200.96deg,
-    #fedc2a -29.09%,
-    #dd5789 51.77%,
-    #7a2c9e 129.35%
-  );
+  background: var(--black);
   font-family: sans-serif;
-  overflow-y: hidden;
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-button {
-  background-color: white;
-  padding: 10px 20px;
-  border-radius: 10px;
-  border: none;
-  appearance: none;
-  font-size: 1.3rem;
-  box-shadow: 0px 8px 28px -6px rgba(24, 39, 75, 0.12),
-    0px 18px 88px -4px rgba(24, 39, 75, 0.14);
-  transition: all ease-in 0.1s;
-  cursor: pointer;
-  opacity: 0.9;
+.main-section{
+  position: fixed;
+  width: 100vw;
+  height: 80vw;
+  left: 0px;
+  top: 82px;
+  padding: 20px 10px 0px 10px;
+  background: var(--dark-gray);
 }
 
-button:hover {
-  transform: scale(1.05);
-  opacity: 1;
+/* ScrollBar Styling */
+
+.graph-section::-webkit-scrollbar {
+  width: 16px;
 }
 
-li {
-  list-style: none;
+.graph-section::-webkit-scrollbar-track {
+  background-color: var(--light-gray);
+  border-radius: 100px;
+  width: 70%;
 }
 
-a {
-  text-decoration: none;
-  height: fit-content;
-  width: fit-content;
-  margin: 10px;
+.graph-section::-webkit-scrollbar-thumb {
+  background-color: var(--medium-blue);
+  border-radius: 100px;
 }
 
-a:hover {
-  opacity: 1;
-  text-decoration: none;
+/* Button Styling */
+.btn-primary{
+  background-color: var(--medium-blue);
+  border: var(--medium-blue);
 }
 
-.Hello {
+/* Navbar Styling */
+.navbar{
+  border-bottom: 1px solid var(--light-gray);
+}
+
+.nav-bar-logo{
+  margin-right: 20px;
+  height: 55px;
+  width: 130px;
+}
+
+/* Graph Styling */
+
+.graph-section{
+  overflow-x: auto;
+  padding: 10px 0px;
+}
+
+.graph-heading {
+  position: relative;
+  text-align: center;
+  height: 60px;
+  color: var(--white);
+  font-size: 25px;
+  font-weight: bolder;
+  z-index: 0;
+}
+
+.graph {
+  display: grid;
+  width: 100%;
+  grid-auto-flow: column;
+  grid-auto-columns: 70px;
+  grid-template-columns: 80px;
+  grid-template-rows: repeat(7, 50px);
+  
+  .left-unit-cell {
+    text-align: center;
+    margin-top: -10px;
+    margin-right: 10px;
+    font-size: small;
+    text-shadow: 1px 1px var(--black);
+    position: sticky;
+    left: 0px;
+    width: 70px;
+    background: var(--dark-gray);
+    z-index: 1;
+  }
+  
+  .data-cell {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    border-top: 1px dashed var(--medium-blue);
+    
+    &.last-cell {
+      font-size: small;
+      text-shadow: 1px 1px var(--black);
+      border-top: 1px solid var(--medium-blue);
+      align-items: center;
+      
+      .data {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: none;
+      }
+    }
+    
+    .data {
+      width: 100%;
+      border-left: 1px solid var(--dark-gray);
+      border-right: 1px solid var(--dark-gray);
+      background: var(--light-blue);
+      text-align: center;
+    }
+  }
+}
+
+/* Histogram Related Styling */
+
+.histogram-bottom-toolbar{
+  margin-top: 30px;
   display: flex;
+  position: relative;
   justify-content: center;
   align-items: center;
-  margin: 20px 0;
+
+  .date-selectors{
+    margin-right: 10px;
+
+    div{
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      margin: 0px 3px;
+    }
+  }
+
+  .additional-selectors{
+    margin-right: 10px;
+
+    div{
+      justify-content: center;
+      flex-direction: column;
+      margin: 0px 3px;
+    }
+  }
+}
+
+.histogram-clear-button{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  position: relative;
+  float: right;
+  background-color: var(--dark-gray);
+  border-width: 0px;
+  margin-top: 5px;
+  margin-right: 10px;
+  z-index: 1;
+
+  span{
+    font-size: 10px;
+    color: var(--white);
+  }
+}
+
+.close-drop-down-menu{
+  display: none;
+}
+
+/* Loading Indicator Styling */
+
+.loading-indicator{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  position:relative;
+  float: right;
+  right:50%;
+  top: 40%;
+  .spinner-border{
+    position: absolute;
+    width: 40px;
+    height: 40px;
+  }
+  span{
+    position: absolute;
+    height: 20px;
+    width: 100px;
+    margin: 70px 0 0 -10px;
+  }
 }

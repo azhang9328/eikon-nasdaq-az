@@ -2,7 +2,7 @@
 /* eslint no-unused-vars: off */
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 
-export type Channels = 'ipc-example';
+export type Channels = 'gotData' | 'getApiData';
 
 const electronHandler = {
   ipcRenderer: {
@@ -24,6 +24,19 @@ const electronHandler = {
   },
 };
 
+const nasdaqApiHandler = {
+  fetchApiData: async (...args: unknown[]) => {
+    let result = await ipcRenderer.invoke('getApiData', ...args);
+  },
+  getApiData: async () => {
+    ipcRenderer.on('gotData', (event, json) => {
+      return json;
+    });
+  },
+};
+
 contextBridge.exposeInMainWorld('electron', electronHandler);
+contextBridge.exposeInMainWorld('nasdaqApi', nasdaqApiHandler);
 
 export type ElectronHandler = typeof electronHandler;
+export type NasdaqApiHandler = typeof nasdaqApiHandler;
